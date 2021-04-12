@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="ru">
+    <head>
+        <meta charset="utf-8">
+        <title>It's interesting here</title>
+        <style>
+            .content {
+                background-color: rgb(30%,50%,20%);
+                height: 43em;
+                color: white;
+            }
+
+            .ctr {
+                text-align: center;
+            }
+
+            .bottom {
+                float: left;
+                width: 300px;
+                display: flex;
+                flex: 1;
+            }
+
+            .copyright {
+                border: 1px solid black;
+                padding: 10px;
+                float: clear;
+            }
+
+            .clear {
+                clear: left;
+            }
+
+            .refresher {
+                color: white;
+                background-color: red;
+            }
+
+            .flexer {
+                display: flex;
+                flex-direction: row;
+            }
+        </style>
+    </head>
+    <body>
+        <div class="content">
+            <h1 align="center">NEVER GONNA GIVE YOU UP</h1>
+            <table align="center">
+                <caption>Информация о песне</caption>
+                <tbody>
+                    <tr>
+                        <td>Исполнитель</td>
+                        <td>Rick Astley</td>
+                    </tr>
+                    <tr>
+                        <td>Страна</td>
+                        <td>США</td>
+                    </tr>
+                    <tr>
+                        <td>Год</td>
+                        <td>1987</td>
+                    </tr>
+                    <tr>
+                        <td>Жанр</td>
+                        <td>Поп-музыка</td>
+                    </tr>
+                </tbody>
+            </table>
+            <p class="ctr">
+                <img src="img/rick-astley.jpg" title="Never give up">
+            </p>
+            <p class="ctr">Вы наверняка слышали эту песню. И наверняка не один раз! Наверняка даже тогда когда совершенно не хотели!</p>
+            <p class="ctr">Но вы знаете, главное не сдаваться!</p>
+        </div>
+        <br>
+        <br>
+        <div class="flexer">
+            <a class="bottom" href="https://www.youtube.com/watch?v=dQw4w9WgXcQ">
+                <img src="img/qr.jpg" title="Never give up" width="211px" height="173px">
+            </a>
+            <fieldset class="bottom" style="margin-left:20px;">
+                <legend>А здесь можно посмотреть цену Биткоина</legend>
+                <p>
+                    <label>
+                        Price: <input type='text' value='0.0000' readonly/>
+                    </label>
+                </p>
+                <p>
+                    <button class="refresher">Refresh</button>
+                </p>
+            </fieldset>
+            <fieldset id="root" class="bottom" style="margin-left:20px;">
+                <legend>А вам нравится песня?</legend>
+                <form method="post" action="http://localhost/actions/simpleform">
+                    <p>
+                        <label for="name">Ваше имя:</label>
+                        <input type="text" name="name">
+                    </p>
+                    <p>
+                        <input type="radio" value="true" name="isCool">Да
+
+                    </p>
+                    <p>
+                        <input type="radio" value="false" name="isCool">нет, фигня какая-то
+
+                    </p>
+                    <p>
+                        <input type="submit" value="Отправить">
+                    </p>
+                </form>
+            </fieldset>
+            <div class="clear"></div>
+        </div>
+        <script>
+            var price = 0;
+            var request = new XMLHttpRequest();
+            var inputClick = document.querySelector('input[type="text"]');
+            var simpleButton = document.querySelector('.refresher');
+            simpleButton.onclick = function(event) {
+                request.open("GET", "https://api.coindesk.com/v1/bpi/currentprice.json", true);
+                request.send();
+
+                request.onload = function() {
+                    var status = request.status;
+                    if (status == 200) {
+                        var info = JSON.parse(request.responseText);
+                        inputClick.value = info.bpi.USD.rate + " $";
+                    } else {
+                        inputClick.value = "Ошибка! Попробуйте позже";
+                    }
+                }
+            }
+        </script>
+        <br>
+        <footer>
+            <div>
+                <span class="copyright">2021 &copy;Boris Ponomarev     по всем вопросам   www-bory72@yandex.ru
+			</span>
+            </div>
+        </footer>
+				<script crossorigin src="https://unpkg.com/react@16/umd/react.production.min.js"></script>
+				<script crossorigin src="https://unpkg.com/react-dom@16/umd/react-dom.production.min.js"></script>
+				<script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.25.0/babel.min.js"></script>
+				<script type="text/babel">
+
+					class ManagedComponent extends React.Component {
+						constructor(props){
+							super(props);
+
+							this.state = { value: '' , isSatisfied: true };
+
+							this.handleChange = this.handleChange.bind(this);
+							this.handleRadio=this.handleRadio.bind(this);
+							this.handleSubmit = this.handleSubmit.bind(this);
+						}
+
+						handleRadio(event){
+							const isSatisfied = event.currentTarget.value === 'true' ? true: false;
+							console.log('handle', isSatisfied);
+							this.setState({ isSatisfied });
+						}
+
+						handleSubmit(event){
+							if (this.state.isSatisfied===true) {
+								alert('Вы ввели: ' + this.state.value+' и вы довольны');
+							}
+							else {
+								alert('Вас зовут: ' + this.state.value + ' и вы не довольны');
+							}
+							event.preventDefault();
+						}
+
+						handleChange(event){
+							console.log('старое значение: ' + this.state.value + '  новое значение: ' + event.target.value);
+							this.setState({ value: event.target.value });
+						}
+
+						render() {
+							const {isSatisfied}=this.state;
+							return (
+								<div >
+									<h5>А вам понравилась песня?</h5>
+									<form onSubmit={this.handleSubmit} >
+										<label>
+											Введите имя:
+											<input name="name" value={this.state.value}  onChange={this.handleChange} />
+										</label>
+										<br />
+										<label>
+											<input type="radio" name="isSatisfied" value="true" checked={isSatisfied===true} onChange={this.handleRadio} />
+										да
+										</label>
+										<br />
+										<label>
+											<input type="radio" name="isSatisfied" value="false" checked={isSatisfied===false} onChange={this.handleRadio}/>
+											нет, фигня какая-то
+										</label>
+										<br />
+										<input type="submit" value="Отправить" />
+									</form>
+								</div>
+							);
+						}
+					}
+
+					ReactDOM.render(<ManagedComponent />, document.getElementById("root"));
+				</script>
+    </body>
+
+</html>
